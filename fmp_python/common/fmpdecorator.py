@@ -1,8 +1,9 @@
-import functools
 import os
-from datetime import datetime
+import functools
+import sys
 
 import pandas as pd
+from datetime import datetime
 
 from fmp_python.common.fmpexception import FMPException
 
@@ -19,7 +20,6 @@ class FMPDecorator:
                 return request + '?apikey=' + api_key
             else:
                 return request + '&apikey=' + api_key
-
         return deco_function
 
     @classmethod
@@ -32,7 +32,8 @@ class FMPDecorator:
             elif self.output_format == 'pandas':
                 return pd.DataFrame(response.json())
             else:
-                raise FMPException("Output must be either pandas or json", FMPDecorator.format_data.__name__)
+                raise FMPException("Output must be either pandas or json",
+                                   FMPDecorator.format_data.__name__)
 
         return _call_wrapper
 
@@ -41,12 +42,17 @@ class FMPDecorator:
         @functools.wraps(func)
         def _call_wrapper(self, *args, **kwargs):
             response = func(self, *args, **kwargs)
+            resp = response.json()
             if self.output_format == 'json':
-                return response.json()['historical']
+                return resp
             elif self.output_format == 'pandas':
-                return pd.DataFrame(response.json()['historical'])
+                if isinstance(resp, dict):
+                    return pd.DataFrame(resp.get('historical', []))
+                else:
+                    return pd.DataFrame(resp)
             else:
-                raise FMPException("Output must be either pandas or json", FMPDecorator.format_historical_data.__name__)
+                raise FMPException("Output must be either pandas or json",
+                                   FMPDecorator.format_historical_data.__name__)
 
         return _call_wrapper
 
@@ -73,9 +79,8 @@ class FMPDecorator:
         current_full_date = datetime.now().strftime("%d-%m-%Y_%Hh%Mmin%Ss")
 
         filename = '_'.join([symbol, current_full_date])
-        outdir = os.path.join('C:', 'tmp', category, current_day)
+        _root = '{}'.format('C:' if sys.platform == 'win32' else '/')
+        outdir = os.path.join(_root, 'tmp', category, current_day)
         os.makedirs(outdir, exist_ok=True)
-
         fullname = os.path.join(outdir, filename + '.xlsx')
-
         return fullname
