@@ -5,7 +5,7 @@ dist/
 fmp_python.egg-info/**
 
 /venv/
-/.idea/**
+.idea/**
 /.github/**
 /.benchmarks/**
 /.pytest_cache/**
