@@ -44,7 +44,7 @@ fmp.get_quote('AAL')
 - Or, you can store it in the environment variable FMP_API_KEY
 
 ```
-from fmp_python.fmp import FMP
+from fmp_python.fmp import Interval, FMP
 
 fmp = FMP(output_format='pandas', write_to_file=True)
 fmp.get_quote('AAL')
@@ -107,8 +107,9 @@ fmp.get_historical_chart(symbol: str, interval:str)
 *Usage Example*
 
 ```
+
 fmp = FMP(output_format = 'pandas', write_to_file= True)
-fmp.get_historical_chart('AAL', '5min')
+fmp.get_historical_chart('AAL', Interval.MIN_5)
 ```
 
 ## Market Indexes
@@ -138,6 +139,11 @@ fmp.get_index_quote('GSPC')
 fmp.get_historical_chart_index("AAPL", Interval.HOUR_4)
 fmp.get_historical_chart_index('GSPC', Interval.MIN_1)
 fmp.get_historical_price('GSPC')
+```
+
+### 3. Stock screener
+```
+df = fmp.get_stock_screener(volume_gt=100000, price_gt=20, price_lt=500, beta_gt=0.3, limit=5000)
 ```
 
 ### Run Tests

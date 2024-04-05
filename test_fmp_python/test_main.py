@@ -1,6 +1,7 @@
 import json
 import unittest
 
+import pandas
 from pandas import DataFrame
 
 from fmp_python.fmp import FMP, Interval
@@ -13,7 +14,11 @@ class TestFMPIntegration(unittest.TestCase):
     def test_missing_api_key(self):
         # Act and Assert
         with self.assertRaises(ValueError) as context:
-            fmp = FMP()
+            FMP()
+
+        # Log the exception message for debugging
+        if context.exception:
+            print("Exception message:", str(context.exception))
 
         self.assertEqual(
             str(context.exception),
@@ -42,6 +47,7 @@ class TestFMPIntegration(unittest.TestCase):
 
         # Act
         df: DataFrame= fmp.stock_price_change("AAPL")
+        print(df)
 
         # Assert
         self.assertIsInstance(df, DataFrame)
