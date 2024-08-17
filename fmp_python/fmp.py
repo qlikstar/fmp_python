@@ -86,7 +86,7 @@ class FMP(object):
                            volume_gt: int = None, dividend_lt: float = None, dividend_gt: float = None,
                            is_etf: bool = None, exchange: List[str] = None, sector: List[str] = None,
                            industry: List[str] = None, country: List[str] = ['US'], is_actively_trading: bool = True,
-                           limit: int = 1000):
+                           limit: int = 10000):
         rb = RequestBuilder(self.api_key)
         rb.set_category('stock-screener')
 
