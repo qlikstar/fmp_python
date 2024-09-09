@@ -5,7 +5,8 @@ from unittest.mock import patch
 import requests_mock
 
 from fmp_python.common.constants import BASE_URL
-from fmp_python.fmp import FMP, Interval
+from fmp_python.fmp import FMP
+from fmp_python.models.enums import Interval
 
 
 @patch.dict(os.environ, {'FMP_API_KEY': 'demo'})

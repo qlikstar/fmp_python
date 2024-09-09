@@ -46,17 +46,13 @@ fmp.get_quote('AAL')
 ```
 from fmp_python.fmp import Interval, FMP
 
-fmp = FMP(output_format='pandas', write_to_file=True)
+fmp = FMP(output_format='pandas')
 fmp.get_quote('AAL')
 ```
 
 You can choose which output format you want your data **output_format = 'pandas' or 'json'**.
 
 *'pandas' is the default value*
-
-You can also choose if you want the output to be stored in a file (in C:/tmp) by setting **write_to_file = True**
-
-*'False' is the default value*
 
 ## Real Time Stock Price
 
@@ -74,7 +70,7 @@ fmp.get_quote('AAL')
 
 OR
 
-fmp = FMP(output_format = 'json', write_to_file= True)
+fmp = FMP(output_format = 'json')
 fmp.get_quote('AAL')
 ```
 
@@ -108,7 +104,7 @@ fmp.get_historical_chart(symbol: str, interval:str)
 
 ```
 
-fmp = FMP(output_format = 'pandas', write_to_file= True)
+fmp = FMP(output_format = 'pandas')
 fmp.get_historical_chart('AAL', Interval.MIN_5)
 ```
 
@@ -125,7 +121,7 @@ fmp.get_index_quote(symbol: str)
 *Usage Example*
 
 ```
-fmp = FMP(output_format = 'pandas', write_to_file= True)
+fmp = FMP(output_format = 'pandas')
 fmp.get_index_quote('GSPC')
 ```
 
@@ -141,7 +137,17 @@ fmp.get_historical_chart_index('GSPC', Interval.MIN_1)
 fmp.get_historical_price('GSPC')
 ```
 
-### 3. Stock screener
+### 3. Technical Indicators
+
+*Reference*: https://site.financialmodelingprep.com/developer/docs#technicals
+
+```
+from fmp_python.models.enums import Interval, Indicator
+res = fmp.get_technical_indicator("AAPL", Interval.DAY_1, Indicator.RSI, period=14)
+```
+
+
+### 4. Stock screener
 ```
 df = fmp.get_stock_screener(volume_gt=100000, price_gt=20, price_lt=500, beta_gt=0.3, limit=5000)
 ```

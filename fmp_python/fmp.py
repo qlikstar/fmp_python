@@ -1,41 +1,29 @@
-from enum import Enum
-from typing import List
-
 import os
 from datetime import datetime
+from typing import List
 
 import requests
 
 from fmp_python.common.constants import INDEX_PREFIX
 from fmp_python.common.fmpdecorator import FMPDecorator
 from fmp_python.common.requestbuilder import RequestBuilder
+from fmp_python.models.enums import Interval, Indicator
 
 """
 Base class that implements api calls
 """
 
 
-class Interval(Enum):
-    MIN_1 = "1min"
-    MIN_5 = "5min"
-    MIN_15 = "15min"
-    MIN_30 = "30min"
-    HOUR_1 = "1hour"
-    HOUR_4 = "4hour"
-
-
 class FMP(object):
 
-    def __init__(self, api_key=None, output_format='pandas', write_to_file=False):
+    def __init__(self, api_key=None, output_format='pandas'):
         self.api_key = api_key or os.getenv('FMP_API_KEY')
         if self.api_key is None:
             raise ValueError("API key is missing. Please provide a valid API key.")
 
         self.output_format = output_format
-        self.write_to_file = write_to_file
         self.current_day = datetime.today().strftime('%Y-%m-%d')
 
-    @FMPDecorator.write_to_file
     @FMPDecorator.format_data
     def get_quote_short(self, symbol):
         rb = RequestBuilder(self.api_key)
@@ -44,7 +32,6 @@ class FMP(object):
         quote = self.__do_request__(rb.compile_request())
         return quote
 
-    @FMPDecorator.write_to_file
     @FMPDecorator.format_data
     def get_quote(self, symbol):
         rb = RequestBuilder(self.api_key)
@@ -56,7 +43,6 @@ class FMP(object):
     def get_index_quote(self, symbol):
         return FMP.get_quote(self, str(INDEX_PREFIX) + symbol)
 
-    @FMPDecorator.write_to_file
     @FMPDecorator.format_data
     def get_historical_chart(self, symbol, interval: Interval):
         rb = RequestBuilder(self.api_key)
@@ -69,7 +55,6 @@ class FMP(object):
     def get_historical_chart_index(self, symbol: str, interval: Interval):
         return FMP.get_historical_chart(self, str(INDEX_PREFIX) + symbol, interval)
 
-    @FMPDecorator.write_to_file
     @FMPDecorator.format_historical_data
     def get_historical_price(self, symbol: str, limit: int = None):
         rb = RequestBuilder(self.api_key)
@@ -79,7 +64,16 @@ class FMP(object):
         hp = self.__do_request__(rb.compile_request())
         return hp
 
-    @FMPDecorator.write_to_file
+    @FMPDecorator.format_historical_data
+    def get_technical_indicator(self, symbol: str, interval: Interval, indicator: Indicator, period: int):
+        rb = RequestBuilder(self.api_key)
+        rb.set_category('technical_indicator')
+        rb.add_sub_category(interval.value)
+        rb.add_sub_category(symbol)
+        rb.set_query_params({'type': indicator.value, 'period': period})
+        hp = self.__do_request__(rb.compile_request())
+        return hp
+
     @FMPDecorator.format_data
     def get_stock_screener(self, market_cap_lt: int = None, market_cap_gt: int = None, price_lt: int = None,
                            price_gt: int = None, beta_lt: float = None, beta_gt: float = None, volume_lt: int = None,
@@ -102,7 +96,6 @@ class FMP(object):
         hp = self.__do_request__(rb.compile_request())
         return hp
 
-    @FMPDecorator.write_to_file
     @FMPDecorator.format_historical_data
     def stock_price_change(self, symbol: str):
         rb = RequestBuilder(self.api_key)

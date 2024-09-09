@@ -30,5 +30,6 @@ SUPPORTED_CATEGORIES = [
     'losers',
     'market-hours',
     'sectors-performance',
-    'stock-price-change'
+    'stock-price-change',
+    'technical_indicator'
 ]

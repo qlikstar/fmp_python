@@ -1,12 +1,10 @@
-import json
 import unittest
 
-import pandas
 from pandas import DataFrame
+from fmp_python.fmp import FMP
+from fmp_python.models.enums import Interval
 
-from fmp_python.fmp import FMP, Interval
-
-API_KEY = "a24133aa3cf2c36da0043035cf37ca1d"
+API_KEY = "YOUR_TEST_KEY"
 
 
 class TestFMPIntegration(unittest.TestCase):
